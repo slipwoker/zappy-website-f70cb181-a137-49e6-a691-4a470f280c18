@@ -1,44 +1,35 @@
-# מזי — Generative Engine Optimization Map
-
-> מזי בודקת שהאיוונט המרות של פייסבוק פעיל גם לURL באנגלית
+# Business — Generative Engine Optimization Map
 
 ---
 
 ## Pages
 
 ### בית
-https://-f70cb181.zappy5.app
+https://example.com
 מזי מציעה בניית דף נחיתה מקצועי עם עיצוב להמרות גבוהות ומעקב פייסבוק מתקדם. פתרונות דיגיטליים לעסקים קטנים בישראל שרוצים תוצאות מדידות ומכירות אמיתיות.
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://-f70cb181.zappy5.app/privacy
+https://example.com/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://-f70cb181.zappy5.app/terms
+https://example.com/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://-f70cb181.zappy5.app/accessibility
+https://example.com/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
 
 # Business Context (for LLM understanding)
 
-## About מזי
-מזי בודקת שהאיוונט המרות של פייסבוק פעיל גם לURL באנגלית
-
-## Target Audience
-
-## Industry
-General
-
+## About Business
 ---
 
 # Additional Resources
 
-- **Sitemap**: https://-f70cb181.zappy5.app/sitemap.xml
-- **Robots.txt**: https://-f70cb181.zappy5.app/robots.txt
+- **Sitemap**: https://example.com/sitemap.xml
+- **Robots.txt**: https://example.com/robots.txt
