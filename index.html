@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>בניית דף נחיתה מקצועי שמניב המרות אמיתיות — מזי</title>
+    <meta name="description" content="מזי מציעה בניית דף נחיתה מקצועי עם עיצוב להמרות גבוהות ומעקב פייסבוק מתקדם. פתרונות דיגיטליים לעסקים קטנים בישראל שרוצים תוצאות מדידות ומכירות אמיתיות.">
+    <meta name="keywords" content="מזי, בניית דף נחיתה מקצועי, עיצוב דף נחיתה להמרות גבוהות, דף נחיתה לעסקים קטנים בישראל, מעקב המרות פייסבוק">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'f70cb181-a137-49e6-a691-4a470f280c18',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="בניית דף נחיתה מקצועי שמניב המרות אמיתיות — מזי">
+  <meta property="og:description" content="מזי מציעה בניית דף נחיתה מקצועי עם עיצוב להמרות גבוהות ומעקב פייסבוק מתקדם. פתרונות דיגיטליים לעסקים קטנים בישראל שרוצים תוצאות מדידות ומכירות אמיתיות.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="בניית דף נחיתה מקצועי שמניב המרות אמיתיות — מזי">
+  <meta name="twitter:description" content="מזי מציעה בניית דף נחיתה מקצועי עם עיצוב להמרות גבוהות ומעקב פייסבוק מתקדם. פתרונות דיגיטליים לעסקים קטנים בישראל שרוצים תוצאות מדידות ומכירות אמיתיות.">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: var(--text-dark, #333) !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))), .sub-menu:not(:has(li)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .sub-menu.mobile-expanded { max-height: 500px !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: auto !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-dark) !important; position: static !important; flex-shrink: 0 !important; align-self: stretch !important; z-index: 2 !important; padding: 0 !important; margin: 0 !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-dark) !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-dark) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="mobile-lang-menu-deployed-css">
+    @media (max-width: 768px) {
+      .lang-switcher,
+      .nav-cta-container .lang-switcher,
+      .nav-container .lang-switcher,
+      .navbar .lang-switcher,
+      .navbar .nav-cta-container .lang-switcher,
+      .nav-icons-left .lang-switcher,
+      .nav-ecommerce-icons .lang-switcher { display: none !important; }
+      .mobile-lang-menu { width: 100%; border-top: 1px solid rgba(128,128,128,0.2); padding: 8px 0 0 0; margin-top: 8px; }
+      .mobile-lang-toggle { display: flex !important; align-items: center; justify-content: space-between; width: 100%; padding: 12px 16px; background: none; border: none; cursor: pointer; font-size: 15px; color: inherit; font-family: inherit; }
+      .mobile-lang-toggle::after { content: ''; display: inline-block; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform 0.3s ease; margin-left: 8px; }
+      .mobile-lang-toggle.expanded::after { transform: rotate(-135deg); }
+      .mobile-lang-options { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+      .mobile-lang-options.expanded { max-height: 300px; }
+      .mobile-lang-option { display: flex !important; align-items: center; gap: 10px; padding: 10px 24px; text-decoration: none; color: inherit; font-size: 14px; font-family: inherit; }
+      .mobile-lang-option:hover { background: rgba(128,128,128,0.1); }
+      .mobile-lang-option.active { font-weight: 600; opacity: 0.7; pointer-events: none; }
+      .mobile-lang-option img { width: 20px; height: 20px; border-radius: 50%; }
+    }
+    @media (min-width: 769px) {
+      .mobile-lang-menu { display: none !important; }
+    }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      #mic-access-tool-general-button, .mic-access-tool-general-button,
+      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      }
+    </style>
+</head>
+<body>
+
+  <nav class="navbar" dir="rtl">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="תפריט">
+    <svg class="hamburger-icon" width="24" height="24" viewbox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewbox="0 0 24 24" fill="none" style="display: none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+  
+  <button class="phone-header-btn" aria-label="התקשר">
+    <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+  
+  <div class="nav-container">
+    <div class="nav-right-group"><div class="nav-brand">
+      <a href="/" class="logo-link">
+        <img src="/assets/business-logo.webp" alt="מזי" class="logo">
+      </a>
+    </div><ul class="nav-menu" id="navMenu"><li><a href="#features">תכונות</a></li><li><a href="#steps">שלבים</a></li><li><a href="#audit-checklist">רשימת ביקורת</a></li><li><a href="#testimonials">המלצות</a></li><li><a href="#stats">סטטיסטיקות</a></li></ul></div>
+    
+    
+    
+    <div class="nav-cta-container">
+      <a href="#contact" class="nav-cta-btn">Contact</a>
+    </div>
+  </div>
+</nav>
+<script>
+
+// Navbar Mobile Menu Toggle and Contrast Fix
+(function() {
+  // Use 'load' event instead of 'DOMContentLoaded' to ensure we run AFTER all other scripts
+  window.addEventListener('load', function() {
+    
+    // FIX MOBILE BUTTON CONTRAST
+    // Detect navbar background color and apply contrasting color to mobile buttons
+    const navbar = document.querySelector('.navbar, nav, header');
+    if (!navbar) {
+      console.log('[Navbar] Navbar element not found');
+      return;
+    }
+    
+    // DECLARE VARIABLES EARLY to avoid Temporal Dead Zone errors
+    // These are used in multiple places below
+    let mobileToggle = document.getElementById('mobileToggle') ||
+                       document.querySelector('.mobile-toggle') ||
+                       document.querySelector('.hamburger') ||
+                       document.querySelector('.hamburger-menu') ||
+                       document.querySelector('.menu-toggle') ||
+                       document.querySelector('.burger-menu') ||
+                       document.querySelector('[aria-label="Menu"]') ||
+                       document.querySelector('[aria-label="תפריט"]');
+    
+    const phoneBtn = document.querySelector('.phone-header-btn');
+    
+    const computedStyle = window.getComputedStyle(navbar);
+    let bgColor = computedStyle.backgroundColor;
+    
+    console.log('[Navbar] Initial navbar background:', bgColor);
+    
+    // Check if background is transparent or rgba with 0 alpha
+    const isTransparent = bgColor === 'transparent' || 
+                         bgColor === 'rgba(0, 0, 0, 0)' ||
+                         (bgColor.startsWith('rgba') && bgColor.includes(', 0)'));
+    
+    if (isTransparent) {
+      // Check for background-image or gradient
+      const bgImage = computedStyle.backgroundImage;
+      if (bgImage && bgImage !== 'none') {
+        console.log('[Navbar] Navbar has background image/gradient, using dark text');
+        bgColor = 'rgb(240, 240, 240)'; // Assume light background
+      } else {
+        // Transparent navbar - check body background
+        const bodyBg = window.getComputedStyle(document.body).backgroundColor;
+        console.log('[Navbar] Navbar transparent, using body background:', bodyBg);
+        bgColor = bodyBg;
+      }
+    }
+    
+    // Calculate luminance to determine if background is light or dark
+    const rgb = bgColor.match(/\d+/g);
+    if (rgb && rgb.length >= 3) {
+      const r = parseInt(rgb[0]);
+      const g = parseInt(rgb[1]);
+      const b = parseInt(rgb[2]);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      
+      // Mobile button colors are set by Claude's AI-generated CSS (same as .nav-menu a)
+      // No dynamic color overrides needed - colors come from the generated navbar CSS
+      console.log('[Navbar] Mobile button colors preserved from Claude CSS (luminance:', luminance.toFixed(2) + ')');
+      
+      // FIX ICON SIZES - Ensure SVGs are properly sized and visible
+      // INJECT CRITICAL CSS TO OVERRIDE ANY CONFLICTING RULES
+      const criticalCSS = document.createElement('style');
+      criticalCSS.id = 'zappy-mobile-nav-fix';
+      const htmlLang = document.documentElement.lang || 'en';
+      const htmlDir = document.documentElement.dir || 'ltr';
+      // Check both dir attribute AND lang for RTL detection
+      // dir="rtl" is the most reliable indicator
+      const isRTL = htmlDir === 'rtl' || htmlLang === 'he' || htmlLang === 'ar';
+      
+      criticalCSS.textContent = `
+        /* Hide mobile buttons on desktop, show only on mobile */
+        @media (min-width: 769px) {
+          .mobile-toggle,
+          .phone-header-btn {
+            display: none !important;
+          }
+        }
+        
+        /* Show and position mobile buttons correctly on mobile */
+        @media (max-width: 768px) {
+          .mobile-toggle,
+          .phone-header-btn {
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 1001 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 6px !important;
+            background: none !important;
+            color: var(--nav-text, var(--text-dark)) !important;
+          }
+          
+          /* LTR positioning (default): hamburger LEFT, phone RIGHT */
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .mobile-toggle,
+          html[dir="ltr"] .mobile-toggle {
+            left: 12px !important;
+            right: auto !important;
+          }
+          html:not([dir="rtl"]):not([lang="he"]):not([lang="ar"]) .phone-header-btn,
+          html[dir="ltr"] .phone-header-btn {
+            right: 12px !important;
+            left: auto !important;
+          }
+          
+          /* RTL positioning: hamburger RIGHT, phone LEFT */
+          html[dir="rtl"] .mobile-toggle,
+          html[lang="he"] .mobile-toggle,
+          html[lang="ar"] .mobile-toggle {
+            right: 12px !important;
+            left: auto !important;
+          }
+          html[dir="rtl"] .phone-header-btn,
+          html[lang="he"] .phone-header-btn,
+          html[lang="ar"] .phone-header-btn {
+            left: 12px !important;
+            right: auto !important;
+          }
+          
+          /* CRITICAL: Ensure nav-container has min-height on mobile */
+          /* All children are positioned absolutely/fixed on mobile, so height:auto collapses to 0 */
+          .nav-container {
+            min-height: 70px !important;
+            position: relative !important;
+          }
+          
+          /* Ensure SVG icons are properly sized and inherit color */
+          .mobile-toggle svg,
+          .phone-header-btn svg {
+            width: 24px !important;
+            height: 24px !important;
+            /* Don't force display - let JavaScript control hamburger/close toggle */
+          }
+          
+          /* Reset nav-cta-container on mobile - remove desktop box-shadow/padding */
+          /* that creates a visible ghost box when CTA button is hidden */
+          .nav-cta-container {
+            box-shadow: none !important;
+            padding: 0 !important;
+          }
+          
+          /* Hide nav-cta-container entirely on mobile when there's no lang-switcher */
+          /* (only the CTA button is inside, and it's hidden on mobile) */
+          .nav-cta-container:not(:has(.lang-switcher)) {
+            display: none !important;
+          }
+          
+          /* CRITICAL: Prevent hero image fade gradient from bleeding over headline text */
+          /* The .image-fade-gradient has bottom: -30px (extends below parent) */
+          /* On mobile stacked layout, this overlaps the h1 text below the image */
+          .hero-image-column {
+            overflow: hidden !important;
+          }
+          .image-fade-gradient {
+            bottom: 0 !important;
+          }
+          
+          /* Hide desktop language switcher on mobile - hamburger menu handles it */
+          /* High specificity to override stored CSS */
+          .lang-switcher,
+          .nav-cta-container .lang-switcher,
+          .nav-container .lang-switcher,
+          .navbar .lang-switcher,
+          .navbar .nav-cta-container .lang-switcher {
+            display: none !important;
+          }
+        }
+      `;
+      
+      // Remove existing fix if present and inject new one
+      const existing = document.getElementById('zappy-mobile-nav-fix');
+      if (existing) existing.remove();
+      document.head.appendChild(criticalCSS);
+      
+      console.log('[Navbar] Critical CSS injected for mobile nav positioning');
+      
+      // ONLY apply inline positioning styles on mobile viewport
+      // On desktop, the CSS handles hiding these buttons with display: none
+      // Inline styles were breaking desktop layout by overriding CSS
+      const isMobileViewport = window.innerWidth <= 768;
+      
+      if (mobileToggle) {
+        // Icon sizing applies to all viewports for consistency
+        const hamburgerIcon = mobileToggle.querySelector('.hamburger-icon');
+        const closeIcon = mobileToggle.querySelector('.close-icon');
+        
+        if (hamburgerIcon) {
+          hamburgerIcon.style.setProperty('width', '24px', 'important');
+          hamburgerIcon.style.setProperty('height', '24px', 'important');
+          hamburgerIcon.style.setProperty('display', 'block', 'important'); // Show hamburger by default
+        }
+        if (closeIcon) {
+          closeIcon.style.setProperty('width', '24px', 'important');
+          closeIcon.style.setProperty('height', '24px', 'important');
+          closeIcon.style.setProperty('display', 'none', 'important'); // Hide close icon by default
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          mobileToggle.style.setProperty('position', 'absolute', 'important');
+          mobileToggle.style.setProperty('top', '50%', 'important');
+          mobileToggle.style.setProperty('transform', 'translateY(-50%)', 'important');
+          mobileToggle.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          
+          console.log('[Navbar] Mobile toggle positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          mobileToggle.style.removeProperty('position');
+          mobileToggle.style.removeProperty('top');
+          mobileToggle.style.removeProperty('transform');
+          mobileToggle.style.removeProperty('z-index');
+          mobileToggle.style.removeProperty('left');
+          mobileToggle.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared mobile toggle inline positioning');
+        }
+      }
+      
+      if (phoneBtn) {
+        // Icon sizing applies to all viewports
+        const phoneIcon = phoneBtn.querySelector('svg');
+        if (phoneIcon) {
+          phoneIcon.style.width = '24px';
+          phoneIcon.style.height = '24px';
+          phoneIcon.setAttribute('width', '24');
+          phoneIcon.setAttribute('height', '24');
+        }
+        
+        // ONLY set positioning inline styles on mobile
+        if (isMobileViewport) {
+          phoneBtn.style.setProperty('position', 'absolute', 'important');
+          phoneBtn.style.setProperty('top', '50%', 'important');
+          phoneBtn.style.setProperty('transform', 'translateY(-50%)', 'important');
+          phoneBtn.style.setProperty('z-index', '1001', 'important');
+          
+          // Clear any inline left/right so CSS can take over based on html[dir]
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          
+          console.log('[Navbar] Phone button positioning applied (mobile viewport)');
+        } else {
+          // On desktop, clear any positioning styles to let CSS handle it
+          phoneBtn.style.removeProperty('position');
+          phoneBtn.style.removeProperty('top');
+          phoneBtn.style.removeProperty('transform');
+          phoneBtn.style.removeProperty('z-index');
+          phoneBtn.style.removeProperty('left');
+          phoneBtn.style.removeProperty('right');
+          console.log('[Navbar] Desktop viewport - cleared phone button inline positioning');
+        }
+      }
+    } else {
+      console.log('[Navbar] Could not parse background color:', bgColor);
+    }
+    
+    // MOBILE MENU TOGGLE
+    // Re-query in case DOM changed (mobileToggle already declared at top of function)
+    mobileToggle = document.getElementById('mobileToggle') ||
+                   document.querySelector('.mobile-toggle') ||
+                   document.querySelector('.hamburger') ||
+                   document.querySelector('.hamburger-menu') ||
+                   document.querySelector('.menu-toggle') ||
+                   document.querySelector('.burger-menu') ||
+                   document.querySelector('[aria-label="Menu"]') ||
+                   document.querySelector('[aria-label="תפריט"]');
+    
+    // EXPANDED SEARCH: Find nav menu by ID or class
+    const navMenu = document.getElementById('navMenu') ||
+                  document.querySelector('.nav-menu') ||
+                  document.querySelector('.nav-links') ||
+                  document.querySelector('nav ul:not(.submenu)');
+    
+    if (!mobileToggle || !navMenu) {
+      console.log('[Navbar] Mobile toggle or menu not found:', { toggle: !!mobileToggle, menu: !!navMenu });
+      return;
+    }
+    
+    // Ensure navMenu has ID for CSS targeting
+    if (!navMenu.id) {
+      navMenu.id = 'navMenu';
+    }
+    
+    console.log('[Navbar] Initializing mobile menu...');
+    
+    // Remove any existing event listeners by cloning the button
+    const newToggle = mobileToggle.cloneNode(true);
+    mobileToggle.parentNode.replaceChild(newToggle, mobileToggle);
+    
+    // Toggle menu on button click - use newToggle now
+    newToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const hamburgerIcon = this.querySelector('.hamburger-icon');
+      const closeIcon = this.querySelector('.close-icon');
+      const isActive = navMenu.classList.contains('active');
+      
+      if (isActive) {
+        // Close menu
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed');
+      } else {
+        // Open menu
+        navMenu.classList.add('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'none', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'block', 'important');
+        document.body.style.overflow = 'hidden';
+        console.log('[Navbar] Menu opened');
+      }
+    });
+    
+    // Close menu when clicking nav links (but NOT dropdown toggles)
+    const navLinks = navMenu.querySelectorAll('a');
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        // Don't close if it's a dropdown child (unless it's a real navigation link)
+        if (this.getAttribute('href') === '#') return;
+        
+        const hamburgerIcon = newToggle.querySelector('.hamburger-icon');
+        const closeIcon = newToggle.querySelector('.close-icon');
+        
+        navMenu.classList.remove('active');
+        if (hamburgerIcon) hamburgerIcon.style.setProperty('display', 'block', 'important');
+        if (closeIcon) closeIcon.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = '';
+        console.log('[Navbar] Menu closed (link clicked)');
+      });
+    });
+    
+    // DROPDOWN MENU TOGGLE (for mobile and touch devices)
+    var dropdownToggles = navMenu.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var parent = this.closest('.nav-dropdown');
+        if (!parent) return;
+        
+        // Close other open dropdowns at the same level
+        var siblings = parent.parentNode.querySelectorAll('.nav-dropdown.open');
+        siblings.forEach(function(sib) {
+          if (sib !== parent) sib.classList.remove('open');
+        });
+        
+        parent.classList.toggle('open');
+        console.log('[Navbar] Dropdown toggled:', parent.classList.contains('open') ? 'open' : 'closed');
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.nav-dropdown')) {
+        var openDropdowns = document.querySelectorAll('.nav-dropdown.open');
+        openDropdowns.forEach(function(dd) { dd.classList.remove('open'); });
+      }
+    });
+    
+    console.log('[Navbar] Dropdown handlers initialized for ' + dropdownToggles.length + ' dropdowns');
+    
+    // Phone button functionality (phoneBtn already declared at top of function)
+    if (phoneBtn) {
+      phoneBtn.addEventListener('click', function() {
+        // Get phone number from placeholder in page or use default
+        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+        const phoneNumber = phoneLinks.length > 0 
+          ? phoneLinks[0].getAttribute('href').replace('tel:', '')
+          : '[business_phone]';
+        
+        window.location.href = 'tel:' + phoneNumber;
+        console.log('[Navbar] Phone button clicked');
+      });
+    }
+    
+    console.log('[Navbar] Mobile menu initialized successfully');
+    
+    // === WHATSAPP BUTTON VISIBILITY FIX ===
+    // Ensure WhatsApp floating button is hidden on desktop and visible on mobile
+    // IMPORTANT: Only target the floating button by its class, NOT generic wa.me links
+    const handleWhatsAppVisibility = function() {
+      const whatsappBtn = document.querySelector('.whatsapp-float');
+      if (whatsappBtn) {
+        const isDesktop = window.innerWidth >= 769;
+        if (isDesktop) {
+          whatsappBtn.style.setProperty('display', 'none', 'important');
+          whatsappBtn.style.setProperty('visibility', 'hidden', 'important');
+          whatsappBtn.style.setProperty('opacity', '0', 'important');
+          whatsappBtn.style.setProperty('pointer-events', 'none', 'important');
+          console.log('[WhatsApp] Button hidden on desktop');
+        } else {
+          whatsappBtn.style.removeProperty('display');
+          whatsappBtn.style.removeProperty('visibility');
+          whatsappBtn.style.removeProperty('opacity');
+          whatsappBtn.style.removeProperty('pointer-events');
+          console.log('[WhatsApp] Button visible on mobile');
+        }
+      }
+    };
+    
+    // Run on load
+    handleWhatsAppVisibility();
+    
+    // Run on resize with debouncing
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(handleWhatsAppVisibility, 100);
+    });
+  });
+})();
+
+</script>
+  
+  <main>
+    <section class="index-hero-section" data-layout-spec="בית-hero" data-hero-type="fullscreen-scrim">
+  <!-- Background Media Layer -->
+  <div class="index-hero-section__bg-wrapper">
+    <img data-hero-bg="true" data-placeholder="index-hero-bg" data-context="Dark midnight tech background with subtle pixel grid overlay and film grain texture, representing Facebook conversion event tracking and analytics monitoring for a Hebrew/RTL tech audit platform. Abstract digital interface elements, faint cyan and purple glow accents, professional QA dashboard aesthetic. No people, no text overlays." width="1920" height="1080" src="/assets/site-index-hero-bg.webp" alt="רקע טכנולוגי כהה עם רשת פיקסלים ומעקב אירועי המרה" class="index-hero-section__bg-image">
+    <div class="index-hero-section__bg-grain"></div>
+  </div>
+
+  <!-- Scrim Overlay -->
+  <div class="index-hero-section__scrim" aria-hidden="true"></div>
+
+  <!-- Hero Content Overlay -->
+  <div class="index-hero-section__overlay-container">
+    <div class="index-hero-section__overlay-content">
+      <!-- Main Headline + Supporting Text -->
+      <div class="index-hero-section__text-group">
+        <h1 class="index-hero-section__headline">וידוא אירוע המרות פייסבוק ב-URL באנגלית</h1>
+        <h3 class="index-hero-section__subtitle">ביקורת מקיפה שמאשרת שאירועי הפיקסל יורים נכון, הפרמטרים שלמים, והעקביות מובטחת בכל וריאנט שפה ו-URL.</h3>
+      </div>
+
+      <!-- CTA Row -->
+      <div class="index-hero-section__cta-row">
+        <a href="#contact" class="index-hero-section__btn index-hero-section__btn--primary">בקש ביקורת אירועי פיקסל מהירה</a>
+        <a href="#features" class="index-hero-section__btn index-hero-section__btn--secondary">ראה מה נבדק</a>
+      </div>
+
+      <!-- KPI Strip (3-card grid) -->
+      <div class="index-hero-section__kpi-strip">
+        <!-- Large KPI Card (7 cols) -->
+        <div class="index-hero-section__kpi-card index-hero-section__kpi-card--large">
+          <div class="index-hero-section__kpi-header">
+            <span class="index-hero-section__kpi-title">סטטוס ירי אירוע</span>
+            <span class="index-hero-section__kpi-status index-hero-section__kpi-status--active">פעיל</span>
+          </div>
+          <div class="index-hero-section__kpi-value">100%</div>
+          <div class="index-hero-section__kpi-meta">נבדק לאחרונה: 14:32 | 23.01.2025</div>
+        </div>
+
+        <!-- Small KPI Cards Container (5 cols, 2 rows) -->
+        <div class="index-hero-section__kpi-small-group">
+          <!-- Small KPI #1 -->
+          <div class="index-hero-section__kpi-card index-hero-section__kpi-card--small">
+            <span class="index-hero-section__kpi-title">כיסוי URL באנגלית</span>
+            <div class="index-hero-section__kpi-value">94%</div>
+            <div class="index-hero-section__kpi-meta"><code>/en/product-page</code></div>
+          </div>
+
+          <!-- Small KPI #2 -->
+          <div class="index-hero-section__kpi-card index-hero-section__kpi-card--small">
+            <span class="index-hero-section__kpi-title">תקינות פרמטרים</span>
+            <div class="index-hero-section__kpi-value">7/7</div>
+            <div class="index-hero-section__kpi-meta"><code>content_id, value, currency</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Diagonal Scan Cut Divider -->
+  <div class="index-hero-section__divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 120" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="index-hero-divider-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(45,212,255,0);stop-opacity:1"></stop>
+          <stop offset="50%" style="stop-color:rgba(45,212,255,0.6);stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:rgba(45,212,255,0);stop-opacity:1"></stop>
+        </linearGradient>
+        <linearGradient id="index-hero-divider-fade" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(10,15,24,1);stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:rgba(10,15,24,0);stop-opacity:1"></stop>
+        </linearGradient>
+      </defs>
+      <!-- Base fill (next section background) -->
+      <path d="M0,120 L0,80 L1200,20 L1200,120 Z" fill="#05070B"></path>
+      <!-- Cyan glow line on diagonal edge -->
+      <line x1="0" y1="80" x2="1200" y2="20" stroke="url(#index-hero-divider-glow)" stroke-width="2"></line>
+      <!-- Pixel grid fade overlay -->
+      <rect x="0" y="0" width="1200" height="120" fill="url(#index-hero-divider-fade)" opacity="0.3"></rect>
+    </svg>
+  </div>
+</section>
+
+<section id="features" class="index-features-section" data-layout-spec="בית-features">
+  <div class="index-features-container">
+    <div class="index-features-intro">
+      <h2>מה הבדיקה מאמתת</h2>
+      <p>מזי מריצה סדרת בדיקות אוטומטיות כדי לוודא שאיוונט ההמרות של פייסבוק פועל כשורה גם כאשר הכתובת באנגלית – כולל זיהוי פרמטרים, טיפול ב-UTM, ובדיקת עקביות לאורך הפניות.</p>
+    </div>
+    
+    <div class="index-features-grid">
+      <article class="index-features-card">
+        <div class="index-features-icon" data-element-type="icon" data-icon-type="svg">
+          <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h3>ירייה באנגלית</h3>
+        <p>הבדיקה מוודאת שאיוונט המרות יורה כראוי גם כאשר ה-URL מכיל תווים לטיניים, כולל בדיקת קונפיגורציה נכונה של פיקסל ואימות שהאיוונט נשלח לשרתי פייסבוק.</p>
+        <div class="index-features-audit-signal"><code>/en/checkout?item=abc123</code></div>
+      </article>
+
+      <article class="index-features-card">
+        <div class="index-features-icon" data-element-type="icon" data-icon-type="svg">
+          <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <h3>איכות התאמה וניפוי כפילויות</h3>
+        <p>בדיקה שהאיוונט נשלח עם מזהים ייחודיים תקינים (event_id, fbp, fbc) כדי למנוע ספירה כפולה ולשפר את דיוק הדיווח. המערכת מזהה אם יש חוסר עקביות במידע שנשלח.</p>
+        <div class="index-features-audit-signal"><code>event_id: evt_20240115_abc</code></div>
+      </article>
+
+      <article class="index-features-card">
+        <div class="index-features-icon" data-element-type="icon" data-icon-type="svg">
+          <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"></rect>
+            <path d="M3 9H21M9 21V9" stroke="currentColor" stroke-width="2"></path>
+          </svg>
+        </div>
+        <h3>נוכחות ותקינות פרמטרים</h3>
+        <p>מזי בודקת שכל הפרמטרים הנדרשים קיימים באיוונט (value, currency, content_ids) ושהם מסוג הנכון – למשל, ש-value הוא מספר, ו-currency הוא קוד ISO תקני.</p>
+        <div class="index-features-audit-signal"><code>value: 149.90, currency: ILS</code></div>
+      </article>
+
+      <article class="index-features-card">
+        <div class="index-features-icon" data-element-type="icon" data-icon-type="svg">
+          <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 16V8C21 6.89543 20.1046 6 19 6H5C3.89543 6 3 6.89543 3 8V16C3 17.1046 3.89543 18 5 18H19C20.1046 18 21 17.1046 21 16Z" stroke="currentColor" stroke-width="2"></path>
+            <path d="M12 6V18M12 6L9 9M12 6L15 9M12 18L9 15M12 18L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h3>עקביות לאורך הפניות וקנוניקלים</h3>
+        <p>בדיקה שהאיוונט יורה גם אם המשתמש עבר דרך redirect או שהכתובת הקנונית שונה מה-URL הנוכחי. מזי מוודאת שהמעקב לא נשבר בעקבות שינויי URL טכניים.</p>
+        <div class="index-features-audit-signal"><code>canonical: /en/product → /product</code></div>
+      </article>
+
+      <article class="index-features-card">
+        <div class="index-features-icon" data-element-type="icon" data-icon-type="svg">
+          <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 13C10.4295 13.5741 10.9774 14.0492 11.6066 14.3929C12.2357 14.7367 12.9315 14.9411 13.6467 14.9923C14.3618 15.0435 15.0796 14.9404 15.7513 14.6898C16.4231 14.4392 17.0331 14.0471 17.54 13.54L20.54 10.54C21.4508 9.59699 21.9548 8.33398 21.9434 7.02299C21.932 5.71201 21.4061 4.45794 20.4791 3.5309C19.5521 2.60386 18.298 2.07802 16.987 2.06663C15.676 2.05523 14.413 2.55921 13.47 3.47L11.75 5.18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M14 11C13.5705 10.4259 13.0226 9.95084 12.3934 9.60707C11.7642 9.26331 11.0685 9.05889 10.3533 9.00768C9.63816 8.95646 8.92037 9.05961 8.24861 9.31018C7.57685 9.56076 6.96684 9.9529 6.45996 10.46L3.45996 13.46C2.54917 14.403 2.04519 15.666 2.05659 16.977C2.06798 18.288 2.59382 19.5421 3.52086 20.4691C4.4479 21.3961 5.70197 21.922 7.01295 21.9334C8.32393 21.9448 9.58694 21.4408 10.53 20.53L12.24 18.82" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h3>בדיקת UTM ו-referrer</h3>
+        <p>מזי מוודאת שפרמטרי UTM (utm_source, utm_medium, utm_campaign) מועברים נכון לאיוונט ושה-referrer נשמר כראוי. זה חיוני לייחוס נכון של מקורות תנועה.</p>
+        <div class="index-features-audit-signal"><code>utm_source=facebook&amp;utm_medium=cpc</code></div>
+      </article>
+
+      <article class="index-features-card">
+        <div class="index-features-icon" data-element-type="icon" data-icon-type="svg">
+          <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 4.58579C4.21071 4.96086 4 5.46957 4 6V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M14 2V8H20M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h3>דוח ברור עם שלבי שחזור</h3>
+        <p>בסיום הבדיקה, מזי מספקת דוח מפורט עם סטטוס עבור/נכשל לכל בדיקה, כולל הסבר מדויק על הבעיה ושלבים לשחזור התקלה – כך תוכלו לתקן במהירות.</p>
+        <div class="index-features-audit-signal"><code>status: PASS | reproduction steps</code></div>
+      </article>
+    </div>
+  </div>
+  
+  <div class="index-features-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="index-features-divider-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(45,212,255,0.4);stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:rgba(45,212,255,0);stop-"></stop>
+        </linearGradient>
+      </defs>
+      <path d="M0,60 L0,30 L40,30 L40,25 L80,25 L80,20 L120,20 L120,15 L160,15 L160,10 L200,10 L200,5 L240,5 L240,10 L280,10 L280,15 L320,15 L320,20 L360,20 L360,25 L400,25 L400,30 L440,30 L440,35 L480,35 L480,30 L520,30 L520,25 L560,25 L560,20 L600,20 L600,15 L640,15 L640,20 L680,20 L680,25 L720,25 L720,30 L760,30 L760,35 L800,35 L800,40 L840,40 L840,35 L880,35 L880,30 L920,30 L920,25 L960,25 L960,30 L1000,30 L1000,35 L1040,35 L1040,40 L1080,40 L1080,45 L1120,45 L1120,50 L1160,50 L1160,55 L1200,55 L1200,60 Z" fill="var(--bg-light)" stroke="url(#index-features-divider-gradient)" stroke-width="1"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="index-steps-section" data-layout-spec="בית-steps">
+  <div class="index-steps-container">
+    <div class="index-steps-intro">
+      <h2>איך זה עובד</h2>
+      <p>תהליך בדיקה פשוט ומהיר בשלושה שלבים שמבטיח שאיוונט ההמרות שלך פועל בצורה מושלמת גם עבור דפי נחיתה באנגלית</p>
+    </div>
+
+    <div class="index-steps-grid">
+      <div class="index-steps-card">
+        <div class="index-steps-icon-wrapper">
+          <svg data-element-type="icon" data-icon-type="svg" viewbox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 14h32M8 24h32M8 34h20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+            <circle cx="36" cy="34" r="6" stroke="currentColor" stroke-width="2.5" fill="none"></circle>
+            <path d="M38 34l2 2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <h3>הזנת פרטי הבדיקה</h3>
+        <p>ספקו את כתובת ה-URL באנגלית ואת שם האיוונט המדויק שברצונכם לבדוק. מזי תתחיל לנתח את הדף ולזהות את הקוד המוטמע.</p>
+        <div class="index-steps-code-sample">
+          <code>URL: example.com/en/landing</code>
+          <code>Event: Purchase</code>
+        </div>
+      </div>
+
+      <div class="index-steps-card">
+        <div class="index-steps-icon-wrapper">
+          <svg data-element-type="icon" data-icon-type="svg" viewbox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="12" width="28" height="24" rx="2" stroke="currentColor" stroke-width="2.5" fill="none"></rect>
+            <path d="M16 20h16M16 26h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path>
+            <circle cx="34" cy="18" r="3" fill="currentColor"></circle>
+            <path d="M24 40l-4-4m0 0l4-4m-4 4h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <h3>אימות ובדיקת שלמות</h3>
+        <p>מזי מריצה סימולציה אוטומטית של אינטראקציית משתמש, בודקת ששליחת האיוונט מתבצעת כראוי, ומאמתת את תקינות ה-Payload ושדות המטא-דאטה.</p>
+        <div class="index-steps-code-sample">
+          <code>Status: Event fired ✓</code>
+          <code>Payload: Valid</code>
+        </div>
+      </div>
+
+      <div class="index-steps-card">
+        <div class="index-steps-icon-wrapper">
+          <svg data-element-type="icon" data-icon-type="svg" viewbox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="28" height="28" rx="3" stroke="currentColor" stroke-width="2.5" fill="none"></rect>
+            <path d="M18 24l4 4 8-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="36" cy="14" r="4" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <h3>קבלת דוח QA מפורט</h3>
+        <p>תקבלו דוח תמציתי עם תוצאות ברורות (Pass/Fail), המלצות לתיקון בעיות שזוהו, והערות אימות טכניות להבטחת דיוק מקסימלי.</p>
+        <div class="index-steps-code-sample">
+          <code>Result: PASS ✓</code>
+          <code>Issues: 0 critical</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="index-steps-progress-trace">
+      <div class="index-steps-progress-line"></div>
+      <div class="index-steps-progress-nodes">
+        <div class="index-steps-progress-node index-steps-progress-node-active"></div>
+        <div class="index-steps-progress-node index-steps-progress-node-active"></div>
+        <div class="index-steps-progress-node index-steps-progress-node-active"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="index-steps-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 100" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="index-steps-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:var(--bg-light);stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:var(--bg-dark);stop-opacity:1"></stop>
+        </linearGradient>
+        <pattern id="index-steps-grid" x="0" y="0" width="40" height="40" patternunits="userSpaceOnUse">
+          <path d="M0 0L40 0L40 40L0 40Z" fill="rgba(10,15,24,0.35)" stroke="rgba(242,247,255,0.08)" stroke-width="0.5"></path>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="1200" height="100" fill="url(#index-steps-gradient)"></rect>
+      <rect x="0" y="40" width="1200" height="60" fill="url(#index-steps-grid)" opacity="0.6"></rect>
+    </svg>
+  </div>
+</section>
+
+<section class="index-audit-checklist-section" data-layout-spec="בית-audit-checklist">
+  <div class="audit-checklist-container">
+    <div class="audit-checklist-grid">
+      <!-- Content Column (START - 7 columns) -->
+      <div class="audit-checklist-content">
+        <h2 class="audit-checklist-title">מה נבדק (כדי שתוכלו לסמוך על התוצאה)</h2>
+        <p class="audit-checklist-intro">כל בדיקה מתועדת עם חותמות זמן ושלבים שניתן לשחזר. אם האיוונט לא יורה, אתם יודעים בדיוק איפה הבעיה.</p>
+        
+        <div class="audit-checklist-list">
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">כתובת URL באנגלית נטענת ומתפרשת לכתובת הקנונית הנכונה</div>
+              <div class="checklist-item-support">בדיקת רזולוציה וטעינת דף</div>
+            </div>
+          </div>
+
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">פיקסל הבסיס נטען ללא שגיאות</div>
+              <div class="checklist-item-support">אימות טעינת ספריית SDK</div>
+            </div>
+          </div>
+
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">אירוע המרה יורה על כתובת URL באנגלית</div>
+              <div class="checklist-item-support">בדיקת fire של אירוע היעד</div>
+            </div>
+          </div>
+
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">פרמטרים של האירוע עברו ולידציה (סוג + נוכחות)</div>
+              <div class="checklist-item-support">אימות מבנה ותוכן הפרמטרים</div>
+            </div>
+          </div>
+
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">סימני דה-דופליקציה (event_id) תקינים</div>
+              <div class="checklist-item-support">בדיקת ייחודיות אירועים</div>
+            </div>
+          </div>
+
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">אין ירייה כפולה בטעינה מחדש או הפניה</div>
+              <div class="checklist-item-support">בדיקת התנהגות reload/redirect</div>
+            </div>
+          </div>
+
+          <div class="audit-checklist-item card-bordered">
+            <div class="checklist-item-icon" data-element-type="icon" data-icon-type="svg">
+              <svg viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                <path d="M8 12.5L10.5 15L16 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="checklist-item-content">
+              <div class="checklist-item-label">ראיות הבדיקה נתפסו (חותמות זמן + שלבים שניתן לשחזר)</div>
+              <div class="checklist-item-support">תיעוד מלא של תהליך הבדיקה</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="audit-trust-note">
+          <code class="trust-note-mono">שלבי בדיקה שניתן לשחזר כלולים בכל דוח</code>
+        </div>
+      </div>
+
+      <!-- Console Preview Column (END - 5 columns) -->
+      <div class="audit-console-preview">
+        <div class="console-preview-card card-glassmorphism">
+          <!-- Event Fired State -->
+          <div class="console-state console-state-success">
+            <div class="console-state-header">
+              <span class="console-status-chip status-success">Event Fired</span>
+              <span class="console-timestamp">14:32:18.442</span>
+            </div>
+            <div class="console-logs">
+              <div class="console-log-line"><span class="log-key">url:</span> <span class="log-value">/en/product/premium-plan</span></div>
+              <div class="console-log-line"><span class="log-key">event:</span> <span class="log-value">Purchase</span></div>
+              <div class="console-log-line"><span class="log-key">value:</span> <span class="log-value">299.00</span></div>
+              <div class="console-log-line"><span class="log-key">event_id:</span> <span class="log-value">px_1a2b3c4d</span></div>
+            </div>
+          </div>
+
+          <!-- No Event State -->
+          <div class="console-state console-state-error">
+            <div class="console-state-header">
+              <span class="console-status-chip status-error">No Event</span>
+              <span class="console-timestamp">14:32:18.442</span>
+            </div>
+            <div class="console-logs">
+              <div class="console-log-line"><span class="log-key">url:</span> <span class="log-value">/en/product/premium-plan</span></div>
+              <div class="console-log-line"><span class="log-key">event:</span> <span class="log-value log-missing">—</span></div>
+              <div class="console-log-line"><span class="log-key">status:</span> <span class="log-value log-error">not fired</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Divider: Circuit Trace -->
+  <div class="audit-checklist-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="circuit-trace-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(45,212,255,0.6)"></stop>
+          <stop offset="50%" stop-color="rgba(168,85,247,0.5)"></stop>
+          <stop offset="100%" stop-color="rgba(185,241,61,0.7)"></stop>
+        </linearGradient>
+        <filter id="circuit-glow">
+          <feGaussianBlur stddeviation="2" result="coloredBlur"></feGaussianBlur>
+          <feMerge>
+            <feMergeNode in="coloredBlur"></feMergeNode>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+          </feMerge>
+        </filter>
+      </defs>
+      <!-- Background fill -->
+      <path d="M0,60 L0,0 L1200,0 L1200,60 Z" fill="var(--bg-light)"></path>
+      <!-- Circuit trace line -->
+      <path d="M0,30 L400,30 L400,15 L800,15 L800,30 L1180,30" stroke="url(#circuit-trace-gradient)" stroke-width="2" fill="var(--bg-light)" filter="url(#circuit-glow)"></path>
+      <!-- End node glow -->
+      <circle cx="1180" cy="30" r="4" fill="rgba(185,241,61,0.9)" filter="url(#circuit-glow)"></circle>
+      <circle cx="1180" cy="30" r="2" fill="rgba(185,241,61,1)"></circle>
+    </svg>
+  </div>
+</section>
+
+<section class="index-testimonials-section" data-layout-spec="בית-testimonials">
+  <div class="index-testimonials-container">
+    <div class="index-testimonials-intro">
+      <h2>צוותים בוחרים במזי כשמעקב חייב להיות מדויק</h2>
+      <p>כשכל קליק חשוב, אי אפשר להסתמך על ניחושים. מזי מאמתת שהאיוונט המרות של פייסבוק יורה נכון גם כאשר הכתובת באנגלית, כך שאתם תמיד יודעים מה באמת עובד.</p>
+    </div>
+
+    <div class="index-testimonials-grid">
+      <div class="index-testimonial-card">
+        <div class="index-testimonial-quote">
+          <p>"מזי תפסה לנו URL באנגלית שלא ירה איוונט המרה. חסכנו שבועיים של דיבאגינג ואלפי שקלים בתקציב שהיה הולך לטמיון."</p>
+        </div>
+        <div class="index-testimonial-author">
+          <div class="index-testimonial-name">רונית כהן</div>
+          <div class="index-testimonial-role">מנהלת שיווק דיגיטלי, סטארט-אפ B2B</div>
+        </div>
+        <div class="index-testimonial-metric">
+          <span class="index-metric-label">תוצאה:</span>
+          <span class="index-metric-value">זיהוי תקלה תוך 3 דקות</span>
+        </div>
+      </div>
+
+      <div class="index-testimonial-card">
+        <div class="index-testimonial-quote">
+          <p>"הפרמטרים של הקמפיין לא עברו כמו שצריך. מזי הראתה בדיוק איפה הבעיה והצלנו את הדיווח לפני שהלקוח שם לב."</p>
+        </div>
+        <div class="index-testimonial-author">
+          <div class="index-testimonial-name">יוסי לוי</div>
+          <div class="index-testimonial-role">ראש צוות אנליטיקס, סוכנות דיגיטל</div>
+        </div>
+        <div class="index-testimonial-metric">
+          <span class="index-metric-label">תוצאה:</span>
+          <span class="index-metric-value">תיקון פרמטרים תוך שעה</span>
+        </div>
+      </div>
+
+      <div class="index-testimonial-card">
+        <div class="index-testimonial-quote">
+          <p>"היו לנו המרות מזויפות שהטעו את כל האופטימיזציה. מזי חשפה את זה מיד והחזירה לנו שליטה על הנתונים."</p>
+        </div>
+        <div class="index-testimonial-author">
+          <div class="index-testimonial-name">מיכל אברהם</div>
+          <div class="index-testimonial-role">Performance Marketing Lead, eCommerce</div>
+        </div>
+        <div class="index-testimonial-metric">
+          <span class="index-metric-label">תוצאה:</span>
+          <span class="index-metric-value">מניעת 40% המרות שגויות</span>
+        </div>
+      </div>
+
+      <div class="index-testimonial-card">
+        <div class="index-testimonial-quote">
+          <p>"הדיווח היה מבולגן ולא ברור איפה הבעיה. מזי נתנה לנו תשובות ברורות עם הערות יישום מדויקות."</p>
+        </div>
+        <div class="index-testimonial-author">
+          <div class="index-testimonial-name">עידו שפירא</div>
+          <div class="index-testimonial-role">מנכ"ל, חברת SaaS</div>
+        </div>
+        <div class="index-testimonial-metric">
+          <span class="index-metric-label">תוצאה:</span>
+          <span class="index-metric-value">בהירות מלאה תוך יום</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="index-trust-strip">
+      <div class="index-trust-item">
+        <svg data-element-type="icon" data-icon-type="svg" class="index-trust-icon" width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 2L12.5 7.5L18.5 8.5L14.25 12.5L15.5 18.5L10 15.5L4.5 18.5L5.75 12.5L1.5 8.5L7.5 7.5L10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+        </svg>
+        <span>ראיות בסגנון QA</span>
+      </div>
+      <div class="index-trust-item">
+        <svg data-element-type="icon" data-icon-type="svg" class="index-trust-icon" width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 10L8.5 13.5L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.5"></circle>
+        </svg>
+        <span>עבר / לא עבר ברור</span>
+      </div>
+      <div class="index-trust-item">
+        <svg data-element-type="icon" data-icon-type="svg" class="index-trust-icon" width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"></circle>
+          <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        </svg>
+        <span>אימות מהיר</span>
+      </div>
+      <div class="index-trust-item">
+        <svg data-element-type="icon" data-icon-type="svg" class="index-trust-icon" width="20" height="20" viewbox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="4" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"></rect>
+          <path d="M6 8H14M6 11H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+        </svg>
+        <span>הערות יישום מצורפות</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="index-testimonials-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 60" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="index-testimonials-dots" x="0" y="0" width="8" height="8" patternunits="userSpaceOnUse">
+          <circle cx="4" cy="4" r="0.6" fill="rgba(45,212,255,0.18)"></circle>
+        </pattern>
+      </defs>
+      <path d="M0,60 L0,35 L1200,20 L1200,60 Z" fill="rgba(242,247,255,0.04)"></path>
+      <rect x="0" y="20" width="1200" height="40" fill="url(#index-testimonials-dots)"></rect>
+    </svg>
+  </div>
+</section>
+
+<section class="index-stats-section" data-layout-spec="בית-stats">
+  <div class="index-stats-container">
+    <div class="index-stats-grid">
+      <div class="index-stats-content">
+        <h2 class="index-stats-title">ביטחון שאפשר לדווח עליו</h2>
+        <p class="index-stats-description">כל בדיקה מספקת תובנות מדויקות ונתונים אמינים שמאפשרים לך לקבל החלטות מושכלות ולשפר את הביצועים שלך.</p>
+        
+        <div class="index-stats-tiles">
+          <div class="index-stats-tile">
+            <div class="index-stats-number">2,847</div>
+            <div class="index-stats-label">בדיקות שהושלמו</div>
+            <div class="index-stats-qualifier">בחודש האחרון</div>
+          </div>
+          <div class="index-stats-tile">
+            <div class="index-stats-number">12 דק'</div>
+            <div class="index-stats-label">זמן תגובה ממוצע</div>
+            <div class="index-stats-qualifier">מקבלת לתוצאות</div>
+          </div>
+          <div class="index-stats-tile">
+            <div class="index-stats-number">94%</div>
+            <div class="index-stats-label">בעיות שזוהו</div>
+            <div class="index-stats-qualifier">לפני השקה</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="index-stats-chart-wrapper">
+        <div class="index-stats-chart-card">
+          <div class="index-stats-chart-header">
+            <h3 class="index-stats-chart-title">שלמות סיגנל לאורך בדיקות</h3>
+          </div>
+          
+          <svg class="index-stats-chart-svg" viewbox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" data-no-icon-edit="true" aria-hidden="true">
+            <defs>
+              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1"></stop>
+                <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1"></stop>
+              </linearGradient>
+            </defs>
+            
+            <!-- Grid lines -->
+            <line x1="40" y1="40" x2="40" y2="180" stroke="rgba(242,247,255,0.08)" stroke-width="1"></line>
+            <line x1="40" y1="180" x2="360" y2="180" stroke="rgba(242,247,255,0.08)" stroke-width="1"></line>
+            <line x1="40" y1="110" x2="360" y2="110" stroke="rgba(242,247,255,0.08)" stroke-width="1" stroke-dasharray="4 4"></line>
+            
+            <!-- Before state (lower line) -->
+            <path d="M 60,160 L 120,155 L 180,150 L 240,148 L 300,145" stroke="rgba(242,247,255,0.25)" stroke-width="2" fill="none" stroke-dasharray="5 3"></path>
+            
+            <!-- After state (upper line) -->
+            <path d="M 60,90 L 120,75 L 180,70 L 240,65 L 300,60" stroke="url(#lineGradient)" stroke-width="2.5" fill="none"></path>
+            
+            <!-- Node markers -->
+            <circle cx="60" cy="90" r="4" fill="#00D4FF"></circle>
+            <circle cx="120" cy="75" r="4" fill="#00D4FF"></circle>
+            <circle cx="180" cy="70" r="4" fill="#00D4FF"></circle>
+            <circle cx="240" cy="65" r="4" fill="#7C3AED"></circle>
+            <circle cx="300" cy="60" r="4" fill="#7C3AED"></circle>
+            
+            <!-- Annotation -->
+            <text x="310" y="63" fill="rgba(242,247,255,0.7)" font-size="11" font-family="JetBrains Mono, monospace">+38%</text>
+          </svg>
+          
+          <div class="index-stats-chart-legend">
+            <div class="index-stats-legend-item">
+              <div class="index-stats-legend-line index-stats-legend-line-before"></div>
+              <span class="index-stats-legend-text">לפני אופטימיזציה</span>
+            </div>
+            <div class="index-stats-legend-item">
+              <div class="index-stats-legend-line index-stats-legend-line-after"></div>
+              <span class="index-stats-legend-text">אחרי אופטימיזציה</span>
+            </div>
+            <div class="index-stats-legend-detail">
+              <code class="index-stats-legend-code">PageView</code>
+              <code class="index-stats-legend-code">example.com/en/product</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="index-stats-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewbox="0 0 1200 100" preserveaspectratio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="glowGradient" cx="30%" cy="0%" r="60%">
+          <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:0.15"></stop>
+          <stop offset="50%" style="stop-color:#7C3AED;stop-opacity:0.08"></stop>
+          <stop offset="100%" style="stop-color:#05070B;stop-"></stop>
+        </radialGradient>
+      </defs>
+      <path d="M0,100 L0,50 Q100,45 200,52 T400,48 Q500,52 600,45 T800,50 Q900,48 1000,52 T1200,48 L1200,100 Z" fill="#05070B"></path>
+      <ellipse cx="360" cy="50" rx="400" ry="50" fill="url(#glowGradient)"></ellipse>
+    </svg>
+  </div>
+</section>
+
+<section id="contact" class="index-contact-section" data-layout-spec="בית-contact">
+  <div class="index-contact-container">
+    <div class="index-contact-grid">
+      <div class="index-contact-content">
+        <h2 class="index-contact-title">בדקו את מעקב ה-URL באנגלית שלכם היום</h2>
+        <p class="index-contact-intro">קבלו תוצאות ביקורת תמציתיות והמלצות ישימות כדי לוודא שאיוונט ההמרות של פייסבוק פועל כראוי.</p>
+        <div class="index-contact-checklist">
+          <p class="index-contact-checklist-item"><strong>מה לכלול:</strong></p>
+          <p class="index-contact-checklist-item">• כתובת ה-URL באנגלית שברצונכם לבדוק</p>
+          <p class="index-contact-checklist-item">• שם האיוונט (Conversion Event Name)</p>
+          <p class="index-contact-checklist-item">• כל הפניות או פרמטרי UTM ידועים</p>
+        </div>
+      </div>
+      <div class="index-contact-form-wrapper">
+        <div class="index-contact-form-card">
+          <form class="contact-form" action="/submit-contact" method="POST">
+            <div class="index-contact-form-group">
+              <label for="contact-name" class="index-contact-label">שם מלא</label>
+              <input type="text" id="contact-name" name="name" class="index-contact-input" required="" placeholder="הזינו את שמכם המלא">
+            </div>
+            <div class="index-contact-form-group">
+              <label for="contact-email" class="index-contact-label">אימייל</label>
+              <input type="email" id="contact-email" name="email" class="index-contact-input" required="" placeholder="your@email.com">
+            </div>
+            <div class="index-contact-form-group">
+              <label for="contact-phone" class="index-contact-label">טלפון</label>
+              <input type="tel" id="contact-phone" name="phone" class="index-contact-input" placeholder="050-1234567">
+            </div>
+            <div class="index-contact-form-group">
+              <label for="contact-message" class="index-contact-label">פרטי הבקשה</label>
+              <textarea id="contact-message" name="message" class="index-contact-textarea" rows="4" required="" placeholder="פרטו את ה-URL, שם האיוונט ומידע רלוונטי נוסף"></textarea>
+            </div>
+            <button type="submit" class="index-contact-submit-btn">בקשו את הביקורת</button>
+            <p class="index-contact-privacy">המידע שלכם מאובטח ולא יועבר לצד שלישי. אנחנו מתחייבים לפרטיות מלאה.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer"><div class="footer-container"><div class="footer-top"><div class="footer-column footer-about"><img src="/assets/business-logo.webp" alt="מזי" class="logo"><p class="footer-description">מזי - הפתרון המושלם לכל הצרכים שלך</p></div><div class="footer-column footer-links"><h3 class="footer-heading">קישורים מהירים</h3><ul class="footer-nav"><li><a href="#features">Features</a></li><li><a href="#steps">Steps</a></li><li><a href="#audit-checklist">Audit Checklist</a></li><li><a href="#testimonials">Testimonials</a></li><li><a href="#stats">Stats</a></li><li><a href="#contact">Contact</a></li></ul></div><div class="footer-column footer-contact"><h3 class="footer-heading">יצירת קשר</h3><ul class="contact-list"><li><i class="fas fa-envelope"></i><a href="mailto:[business_email]">[business_email]</a></li><li><i class="fas fa-phone"></i><a href="tel:[business_phone]">[business_phone]</a></li><li><a href="/"><i class="fas fa-map-marker-alt"></i><span>[business_address]</span></a></li></ul></div><div class="footer-column footer-social"><h3 class="footer-heading">עקבו אחרינו</h3><div class="social-links"><a href="[facebook_handle]" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="[instagram_handle]" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="[whatsapp_handle]" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div></div><div class="footer-bottom"><div class="footer-bottom-content"><p class="copyright">© 2026 מזי. כל הזכויות שמורות.</p><div class="footer-legal"><a href="/privacy">מדיניות פרטיות</a><span class="separator">|</span><a href="/terms">תנאי שימוש</a><span class="separator">|</span><a href="/accessibility">נגישות</a><span class="separator">|</span><a href="https://zappy5.com" target="_blank" class="zappy-attribution">נוצר באמצעות Zappy</a></div></div></div></div></footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+
+    <script id="zappy-navbar-scroll-effect">
+    (function(){
+      var nb=document.querySelector('nav.navbar,.navbar:not(.zappy-catalog-menu)');
+      var cm=document.querySelector('.zappy-catalog-menu,#zappy-catalog-menu');
+      if(!nb)return;
+      var fb='rgba(15,17,21,0.85)';
+      var th=60;
+      var rs=getComputedStyle(document.documentElement);
+      var td=rs.getPropertyValue('--text-dark').trim()||'#1a1a1a';
+      var tl=rs.getPropertyValue('--text-light').trim()||'#ffffff';
+      var st=false?td:tl;
+      nb.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease,box-shadow 0.3s ease';
+      if(cm)cm.style.transition='background 0.3s ease,backdrop-filter 0.3s ease,-webkit-backdrop-filter 0.3s ease';
+      var neSel='a,.navbar-brand,.navbar-brand a,.dropdown-toggle,.mobile-toggle,.phone-header-btn,.mobile-hamburger-btn,.mobile-close-btn,.mobile-submenu-toggle,.nav-link';
+      var skipCls=['cart-link','login-link','nav-search-toggle','search-toggle'];
+      function sTC(c,clr){var els=c.querySelectorAll(neSel);for(var i=0;i<els.length;i++){var sk=false;if(els[i].closest('.sub-menu')||els[i].closest('.dropdown-menu')){sk=true;}for(var j=0;j<skipCls.length;j++){if(els[i].classList.contains(skipCls[j])){sk=true;break;}}if(!sk)els[i].style.setProperty('color',clr,'important');}}
+      function cTC(c){var els=c.querySelectorAll(neSel);for(var i=0;i<els.length;i++){if(els[i].closest('.sub-menu')||els[i].closest('.dropdown-menu'))continue;els[i].style.removeProperty('color');}}
+      function applyScrolled(){
+        nb.classList.add('scrolled');
+        if(window.innerWidth>768){
+          nb.style.setProperty('--frosted-text',st);
+          nb.style.setProperty('background-image','none','important');
+          nb.style.setProperty('background-color',fb,'important');
+          nb.style.backdropFilter='blur(12px)';nb.style.webkitBackdropFilter='blur(12px)';nb.style.boxShadow='0 2px 16px rgba(0,0,0,0.12)';
+          sTC(nb,st);
+        }
+        if(cm){cm.classList.add('scrolled');if(window.innerWidth>768){cm.style.setProperty('background',fb,'important');cm.style.setProperty('backdrop-filter','blur(12px)','important');cm.style.setProperty('-webkit-backdrop-filter','blur(12px)','important');sTC(cm,st);}}
+      }
+      function onS(){
+        if(window._zappyNavNoDarkHero) return;
+        if(window.innerWidth<=768){nb.classList.remove('scrolled');cTC(nb);if(cm){cm.classList.remove('scrolled');cTC(cm);}return;}
+        var y=window.scrollY||window.pageYOffset;
+        if(y>th){
+          nb.classList.add('scrolled');nb.style.setProperty('background-color',fb,'important');nb.style.setProperty('background-image','none','important');
+          nb.style.setProperty('--frosted-text',st);nb.style.backdropFilter='blur(12px)';nb.style.webkitBackdropFilter='blur(12px)';nb.style.boxShadow='0 2px 16px rgba(0,0,0,0.12)';
+          sTC(nb,st);
+          if(cm){cm.classList.add('scrolled');cm.style.setProperty('background',fb,'important');cm.style.setProperty('backdrop-filter','blur(12px)','important');cm.style.setProperty('-webkit-backdrop-filter','blur(12px)','important');sTC(cm,st);}
+        }else{
+          nb.classList.remove('scrolled');nb.style.setProperty('background-color','transparent','important');nb.style.removeProperty('background-image');
+          nb.style.removeProperty('--frosted-text');nb.style.backdropFilter='none';nb.style.webkitBackdropFilter='none';nb.style.boxShadow='none';
+          cTC(nb);
+          if(cm){cm.classList.remove('scrolled');cm.style.setProperty('background','transparent','important');cm.style.setProperty('backdrop-filter','none','important');cm.style.setProperty('-webkit-backdrop-filter','none','important');cTC(cm);}
+        }
+      }
+      function sLum(rv,gv,bv){rv/=255;gv/=255;bv/=255;rv=rv<=0.03928?rv/12.92:Math.pow((rv+0.055)/1.055,2.4);gv=gv<=0.03928?gv/12.92:Math.pow((gv+0.055)/1.055,2.4);bv=bv<=0.03928?bv/12.92:Math.pow((bv+0.055)/1.055,2.4);return 0.2126*rv+0.7152*gv+0.0722*bv;}
+      window.addEventListener('scroll',onS,{passive:true});
+      window.addEventListener('resize',onS,{passive:true});
+      onS();
+      var heroEl=document.querySelector('section[class*="hero"],[data-hero-type],main>section:first-child');
+      var hasDH=false;
+      if(heroEl){var hCs=getComputedStyle(heroEl);var hBI=hCs.backgroundImage;if(hBI&&hBI!=='none'){if(hBI.indexOf('url(')!==-1){var hM2=hCs.backgroundColor.match(/\d+/g);if(hM2&&hM2.length>=3){hasDH=sLum(parseInt(hM2[0]),parseInt(hM2[1]),parseInt(hM2[2]))<0.4;}else{hasDH=true;}}else if(hBI.indexOf('gradient')!==-1){var cM=hBI.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g);if(cM&&cM.length>0){var tLm=0;for(var ci=0;ci<cM.length;ci++){var pts=cM[ci].match(/\d+/g);tLm+=sLum(parseInt(pts[0]),parseInt(pts[1]),parseInt(pts[2]));}hasDH=(tLm/cM.length)<0.4;}else{hasDH=true;}}else{hasDH=true;}}else{var hM=hCs.backgroundColor.match(/\d+/g);if(hM&&hM.length>=3){hasDH=sLum(parseInt(hM[0]),parseInt(hM[1]),parseInt(hM[2]))<0.4;}}}
+      if(!hasDH){window.removeEventListener('scroll',onS);window.removeEventListener('resize',onS);applyScrolled();window._zappyNavNoDarkHero=true;}
+    })();
+    </script>
+
+    <script id="zappy-mobile-lang-menu-script">
+    (function() {
+      function initMobileLangMenu() {
+        if (window.innerWidth > 768) {
+          var existingMenu = document.querySelector('.mobile-lang-menu');
+          if (existingMenu) existingMenu.remove();
+          return;
+        }
+        if (document.querySelector('.mobile-lang-menu')) return;
+        var switcher = document.querySelector('.lang-switcher');
+        if (!switcher) return;
+        var dropdown = switcher.querySelector('.lang-switcher-dropdown');
+        if (!dropdown) return;
+        var options = dropdown.querySelectorAll('.lang-option');
+        if (options.length === 0) return;
+        var navMenu = document.getElementById('navMenu') || document.querySelector('.nav-menu') || document.querySelector('nav ul');
+        if (!navMenu) return;
+        var currentLang = document.documentElement.lang || 'en';
+        var langConfigs = {
+          he: {name:'עברית',flag:'https://api.iconify.design/circle-flags/il.svg'},
+          en: {name:'English',flag:'https://api.iconify.design/circle-flags/us.svg'},
+          ar: {name:'العربية',flag:'https://api.iconify.design/circle-flags/sa.svg'},
+          fr: {name:'Français',flag:'https://api.iconify.design/circle-flags/fr.svg'},
+          es: {name:'Español',flag:'https://api.iconify.design/circle-flags/es.svg'},
+          de: {name:'Deutsch',flag:'https://api.iconify.design/circle-flags/de.svg'},
+          ru: {name:'Русский',flag:'https://api.iconify.design/circle-flags/ru.svg'},
+          zh: {name:'中文',flag:'https://api.iconify.design/circle-flags/cn.svg'},
+          ja: {name:'日本語',flag:'https://api.iconify.design/circle-flags/jp.svg'},
+          pt: {name:'Português',flag:'https://api.iconify.design/circle-flags/br.svg'},
+          it: {name:'Italiano',flag:'https://api.iconify.design/circle-flags/it.svg'},
+          ko: {name:'한국어',flag:'https://api.iconify.design/circle-flags/kr.svg'}
+        };
+        var container = document.createElement('div');
+        container.className = 'mobile-lang-menu';
+        var currentConfig = langConfigs[currentLang] || {name:currentLang,flag:''};
+        var toggleBtn = document.createElement('button');
+        toggleBtn.className = 'mobile-lang-toggle';
+        toggleBtn.type = 'button';
+        var currentFlagHtml = currentConfig.flag ? '<img src="' + currentConfig.flag + '" width="20" height="20" alt="" style="border-radius:50%;margin-right:8px;margin-left:8px;">' : '';
+        toggleBtn.innerHTML = currentFlagHtml + currentConfig.name;
+        container.appendChild(toggleBtn);
+        var optionsDiv = document.createElement('div');
+        optionsDiv.className = 'mobile-lang-options';
+        var currentLink = document.createElement('a');
+        currentLink.className = 'mobile-lang-option active';
+        currentLink.href = '#';
+        currentLink.innerHTML = currentFlagHtml + currentConfig.name;
+        optionsDiv.appendChild(currentLink);
+        options.forEach(function(opt) {
+          var link = document.createElement('a');
+          link.className = 'mobile-lang-option';
+          link.href = opt.getAttribute('href');
+          link.innerHTML = opt.innerHTML;
+          optionsDiv.appendChild(link);
+        });
+        container.appendChild(optionsDiv);
+        navMenu.appendChild(container);
+        toggleBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleBtn.classList.toggle('expanded');
+          optionsDiv.classList.toggle('expanded');
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileLangMenu); }
+      else { initMobileLangMenu(); }
+      window.addEventListener('resize', function() { clearTimeout(window._mlrt); window._mlrt = setTimeout(initMobileLangMenu, 250); });
+    })();
+    </script>
+</body>
+</html>
